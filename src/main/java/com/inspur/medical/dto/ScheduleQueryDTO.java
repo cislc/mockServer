@@ -10,4 +10,10 @@ public class ScheduleQueryDTO {
     
     @JsonProperty("DoctorCode")
     private String doctorCode;
+    
+    @JsonProperty("StartDate")
+    private String startDate;
+    
+    @JsonProperty("EndDate")
+    private String endDate;
 }

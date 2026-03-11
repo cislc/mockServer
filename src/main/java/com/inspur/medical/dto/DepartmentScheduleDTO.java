@@ -9,22 +9,28 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DepartmentScheduleDTO {
-    
+
     @JsonProperty("DepartmentName")
     private String departmentName;
-    
+
     @JsonProperty("RecordCount")
     private String recordCount;
-    
+
     @JsonProperty("ParentId")
     private String parentId;
-    
+
     @JsonProperty("Description")
     private String description;
-    
+
     @JsonProperty("DepartmentAddress")
     private String departmentAddress;
-    
+
     @JsonProperty("DepartmentAgeLimit")
     private String departmentAgeLimit;
+
+    @JsonProperty("DepartmentCode")
+    private String departmentCode;
+
+    @JsonProperty("ScheduleFlag")
+    private Integer scheduleFlag;
 }
