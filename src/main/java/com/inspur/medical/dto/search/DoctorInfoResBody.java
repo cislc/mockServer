@@ -1,4 +1,4 @@
-package com.inspur.medical.dto;
+package com.inspur.medical.dto.search;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.inspur.medical.entity.Doctor;
@@ -11,10 +11,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DoctorInfoResponse {
-    
+public class DoctorInfoResBody {
     @JsonProperty("ResultCode")
-    private String resultCode;
+    private Integer resultCode;
     
     @JsonProperty("ResultContent")
     private String resultContent;
@@ -22,11 +21,11 @@ public class DoctorInfoResponse {
     @JsonProperty("Doctors")
     private List<Doctor> doctors;
     
-    public static DoctorInfoResponse success(List<Doctor> doctors) {
-        return new DoctorInfoResponse("1", "查询成功", doctors);
+    public static DoctorInfoResBody success(List<Doctor> doctors) {
+        return new DoctorInfoResBody(0, "成功", doctors);
     }
     
-    public static DoctorInfoResponse error(String message) {
-        return new DoctorInfoResponse("0", message, null);
+    public static DoctorInfoResBody error(String message) {
+        return new DoctorInfoResBody(1, message, null);
     }
 }

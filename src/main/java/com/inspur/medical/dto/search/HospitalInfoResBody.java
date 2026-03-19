@@ -1,4 +1,4 @@
-package com.inspur.medical.dto;
+package com.inspur.medical.dto.search;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -8,10 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HospitalInfoResponse {
-    
+public class HospitalInfoResBody {
     @JsonProperty("ResultCode")
-    private String resultCode;
+    private Integer resultCode;
     
     @JsonProperty("ResultContent")
     private String resultContent;
@@ -19,11 +18,11 @@ public class HospitalInfoResponse {
     @JsonProperty("Info")
     private String info;
     
-    public static HospitalInfoResponse success(String info) {
-        return new HospitalInfoResponse("1", "查询成功", info);
+    public static HospitalInfoResBody success(String info) {
+        return new HospitalInfoResBody(0, "成功", info);
     }
     
-    public static HospitalInfoResponse error(String message) {
-        return new HospitalInfoResponse("0", message, null);
+    public static HospitalInfoResBody error(String message) {
+        return new HospitalInfoResBody(1, message, null);
     }
 }

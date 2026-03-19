@@ -1,10 +1,10 @@
-package com.inspur.medical.dto;
+package com.inspur.medical.dto.search;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class DoctorQueryDTO {
+public class DoctorInfoReqBody {
     @JsonProperty("DepartmentCode")
     private String departmentCode;
 }

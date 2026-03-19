@@ -80,47 +80,18 @@ for i in {1..10}; do
 done
 echo ""
 
-# 步骤2: 创建数据库表结构
-echo "步骤 2/5: 创建数据库表结构..."
-if [ -f "$WORK_DIR/init.sql" ]; then
-    echo "  清理旧表结构..."
+# 步骤2: 初始化数据库 (表结构与Mock数据)
+echo "步骤 2/4: 初始化数据库..."
+if [ -f "$WORK_DIR/deployment/db/medical_mock_init.sql" ]; then
+    echo "  清理并导入数据库同步脚本..."
     docker exec -i -e MYSQL_PWD=$MYSQL_ROOT_PASSWORD medical-mysql mysql \
       -uroot \
       --default-character-set=utf8mb4 \
-      $DB_NAME << 'EOF'
-DROP TABLE IF EXISTS registration;
-DROP TABLE IF EXISTS hospital_info;
-DROP TABLE IF EXISTS item_price;
-DROP TABLE IF EXISTS patient;
-DROP TABLE IF EXISTS doctor_schedule;
-DROP TABLE IF EXISTS doctor;
-DROP TABLE IF EXISTS department;
-EOF
-    
-    echo "  导入init.sql..."
-    docker exec -i -e MYSQL_PWD=$MYSQL_ROOT_PASSWORD medical-mysql mysql \
-      -uroot \
-      --default-character-set=utf8mb4 \
-      $DB_NAME < $WORK_DIR/init.sql
-    echo "✓ 表结构创建成功"
+      $DB_NAME < $WORK_DIR/deployment/db/medical_mock_init.sql
+    echo "✓ 数据库初始化成功"
 else
-    echo "⚠ init.sql不存在,跳过表结构创建"
-    echo "  请确保数据库表已存在或手动创建"
-fi
-echo ""
-
-# 步骤3: 导入数据
-echo "步骤 3/5: 导入数据..."
-if [ -f "$WORK_DIR/data.sql" ]; then
-    echo "  导入data.sql..."
-    docker exec -i -e MYSQL_PWD=$MYSQL_ROOT_PASSWORD medical-mysql mysql \
-      -uroot \
-      --default-character-set=utf8mb4 \
-      $DB_NAME < $WORK_DIR/data.sql
-    echo "✓ 数据导入成功"
-else
-    echo "⚠ data.sql不存在,跳过数据导入"
-    echo "  请手动导入数据或使用API生成Mock数据"
+    echo "✗ 错误: deployment/db/medical_mock_init.sql 不存在!"
+    exit 1
 fi
 echo ""
 

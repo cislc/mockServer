@@ -11,7 +11,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://211.87.236.76:3306/medical_mock?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
-    password: 123456
+    password: Z2A1GNca393kXPM7n98i
     hikari:
       connection-test-query: SELECT 1
       connection-init-sql: SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci

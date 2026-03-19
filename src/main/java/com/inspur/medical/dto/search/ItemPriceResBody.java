@@ -1,4 +1,4 @@
-package com.inspur.medical.dto;
+package com.inspur.medical.dto.search;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.inspur.medical.entity.ItemPrice;
@@ -11,22 +11,21 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemPriceResponse {
-    
+public class ItemPriceResBody {
     @JsonProperty("ResultCode")
-    private String resultCode;
+    private Integer resultCode;
     
     @JsonProperty("ResultContent")
     private String resultContent;
     
     @JsonProperty("TarItemS")
-    private List<ItemPrice> tarItemS;
+    private List<ItemPrice> tarItems;
     
-    public static ItemPriceResponse success(List<ItemPrice> items) {
-        return new ItemPriceResponse("1", "查询成功", items);
+    public static ItemPriceResBody success(List<ItemPrice> items) {
+        return new ItemPriceResBody(0, "成功", items);
     }
     
-    public static ItemPriceResponse error(String message) {
-        return new ItemPriceResponse("0", message, null);
+    public static ItemPriceResBody error(String message) {
+        return new ItemPriceResBody(1, message, null);
     }
 }

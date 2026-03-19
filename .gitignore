@@ -40,3 +40,4 @@ build/
 *.log
 logs/
 *.class
+文档/

@@ -68,40 +68,4 @@ public class PatientService {
         return patientRepository.save(patient);
     }
 
-    @Transactional
-    public void generateMockPatients(int count) {
-        String[] surnames = {"张", "王", "李", "赵", "刘", "陈", "杨", "黄", "周", "吴"};
-        String[] names = {"伟", "芳", "娜", "秀英", "敏", "静", "丽", "强", "磊", "军"};
-        
-        for (int i = 0; i < count; i++) {
-            Patient patient = new Patient();
-            
-            String name = surnames[random.nextInt(surnames.length)] + 
-                         names[random.nextInt(names.length)];
-            
-            patient.setPatientID("P" + String.format("%08d", 10000000 + i));
-            patient.setPatientName(name);
-            patient.setSexCode(random.nextBoolean() ? "1" : "2");
-            patient.setSex(patient.getSexCode().equals("1") ? "男" : "女");
-            patient.setDob(String.format("%d-%02d-%02d", 
-                1950 + random.nextInt(60), 
-                1 + random.nextInt(12), 
-                1 + random.nextInt(28)));
-            patient.setAddress("测试地址" + (i + 1));
-            patient.setIdTypeCode("01");
-            patient.setIdType("身份证");
-            patient.setIdNo(String.format("3301%014d", random.nextLong() & Long.MAX_VALUE).substring(0, 18));
-            patient.setMobile(String.format("1%010d", random.nextInt(1000000000)));
-            patient.setPatType("自费");
-            patient.setPatTypeCode("01");
-            patient.setYbFlag("0");
-            patient.setPatientCard("C" + String.format("%010d", 1000000000 + i));
-            patient.setAccInfo("账户");
-            patient.setAccInfoBalance(String.format("%.2f", random.nextDouble() * 1000));
-            patient.setAccInfoNo("ACC" + String.format("%010d", i));
-            patient.setDocumentID("DOC" + String.format("%010d", i));
-            
-            patientRepository.save(patient);
-        }
-    }
 }
