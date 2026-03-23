@@ -26,4 +26,13 @@ public class DoctorScheduleController {
         }
     }
 
+    @PostMapping("/doctor/schedule")
+    public ScheduleResponse queryDoctorSchedules(@RequestBody ScheduleQueryDTO queryDTO) {
+        try {
+            List<DoctorSchedule> schedules = scheduleService.querySchedules(queryDTO);
+            return ScheduleResponse.success(schedules);
+        } catch (Exception e) {
+            return ScheduleResponse.error("查询失败: " + e.getMessage());
+        }
+    }
 }

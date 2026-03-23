@@ -22,10 +22,10 @@ public class CheckReportResponse {
     private List<CheckReportDTO> lisReports;
     
     public static CheckReportResponse success(List<CheckReportDTO> lisReports) {
-        return new CheckReportResponse("1", "查询成功", lisReports);
+        return new CheckReportResponse("0", "查询成功", lisReports);
     }
     
     public static CheckReportResponse error(String message) {
-        return new CheckReportResponse("0", message, null);
+        return new CheckReportResponse("1", message, null);
     }
 }

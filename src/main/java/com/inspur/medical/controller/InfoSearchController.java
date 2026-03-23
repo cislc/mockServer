@@ -1,7 +1,5 @@
 package com.inspur.medical.controller;
 
-import com.inspur.medical.dto.common.ApiRequest;
-import com.inspur.medical.dto.common.ApiResponse;
 import com.inspur.medical.dto.search.*;
 import com.inspur.medical.entity.Department;
 import com.inspur.medical.entity.Doctor;
@@ -35,54 +33,51 @@ public class InfoSearchController {
     private DoctorRepository doctorRepository;
 
     @PostMapping("/item/price")
-    public ApiResponse<ItemPriceResBody> searchItemPrice(@RequestBody ApiRequest<ItemPriceReqBody> request) {
+    public ItemPriceResBody searchItemPrice(@RequestBody ItemPriceReqBody body) {
         try {
-            ItemPriceReqBody body = request.getBody();
             List<ItemPrice> prices = itemPriceService.searchItemPrice(
                     body != null ? body.getItemType() : null,
                     body != null ? body.getAlias() : null
             );
-            return ApiResponse.success(ItemPriceResBody.success(prices));
+            return ItemPriceResBody.success(prices);
         } catch (Exception e) {
-            return ApiResponse.success(ItemPriceResBody.error("查询失败: " + e.getMessage()));
+            return ItemPriceResBody.error("查询失败: " + e.getMessage());
         }
     }
 
     @PostMapping("/hospital/info")
-    public ApiResponse<HospitalInfoResBody> getHospitalInfo() {
+    public HospitalInfoResBody getHospitalInfo() {
         try {
             String info = hospitalInfoService.getHospitalInfo();
-            return ApiResponse.success(HospitalInfoResBody.success(info));
+            return HospitalInfoResBody.success(info);
         } catch (Exception e) {
-            return ApiResponse.success(HospitalInfoResBody.error("查询失败: " + e.getMessage()));
+            return HospitalInfoResBody.error("查询失败: " + e.getMessage());
         }
     }
 
     @PostMapping("/department/info")
-    public ApiResponse<DepartmentInfoResBody> getDepartmentInfo() {
+    public DepartmentInfoResBody getDepartmentInfo(@RequestBody(required = false) DepartmentInfoReqBody body) {
         try {
-            List<Department> departments = departmentRepository.findAll();
-            return ApiResponse.success(DepartmentInfoResBody.success(departments));
+            String deptCode = body != null ? body.getDepartmentCode() : null;
+            String deptName = body != null ? body.getDepartmentName() : null;
+            
+            List<Department> departments = departmentRepository.search(deptCode, deptName);
+            return DepartmentInfoResBody.success(departments);
         } catch (Exception e) {
-            return ApiResponse.success(DepartmentInfoResBody.error("查询失败: " + e.getMessage()));
+            return DepartmentInfoResBody.error("查询失败: " + e.getMessage());
         }
     }
 
     @PostMapping("/doctor/info")
-    public ApiResponse<DoctorInfoResBody> getDoctorInfo(@RequestBody ApiRequest<DoctorInfoReqBody> request) {
+    public DoctorInfoResBody getDoctorInfo(@RequestBody(required = false) DoctorInfoReqBody body) {
         try {
-            List<Doctor> doctors;
-            DoctorInfoReqBody body = request.getBody();
-            String deptCode = body != null ? body.getDepartmentCode() : null;
+            String doctorCode = body != null ? body.getDoctorCode() : null;
+            String doctorName = body != null ? body.getDoctorName() : null;
             
-            if (deptCode != null && !deptCode.trim().isEmpty()) {
-                doctors = doctorRepository.findByDepartmentCode(deptCode);
-            } else {
-                doctors = doctorRepository.findAll();
-            }
-            return ApiResponse.success(DoctorInfoResBody.success(doctors));
+            List<Doctor> doctors = doctorRepository.search(null, doctorCode, doctorName);
+            return DoctorInfoResBody.success(doctors);
         } catch (Exception e) {
-            return ApiResponse.success(DoctorInfoResBody.error("查询失败: " + e.getMessage()));
+            return DoctorInfoResBody.error("查询失败: " + e.getMessage());
         }
     }
 }

@@ -5,15 +5,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ScheduleResponse {
+    @JsonProperty("ResultCode")
     private String ResultCode;
+    @JsonProperty("ResultContent")
     private String ResultContent;
+    @JsonProperty("RecordCount")
     private String RecordCount;
+    @JsonProperty("Schedules")
     private List<DoctorSchedule> Schedules;
 
     public static ScheduleResponse success(List<DoctorSchedule> schedules) {

@@ -33,10 +33,10 @@ public class ElectronicDocumentResponse {
     
     public static ElectronicDocumentResponse success(String patientID, String patientName, 
                                                      String sex, String cardType, String pdfUrl) {
-        return new ElectronicDocumentResponse("1", "查询成功", patientID, patientName, sex, cardType, pdfUrl);
+        return new ElectronicDocumentResponse("0", "查询成功", patientID, patientName, sex, cardType, pdfUrl);
     }
     
     public static ElectronicDocumentResponse error(String message) {
-        return new ElectronicDocumentResponse("0", message, null, null, null, null, null);
+        return new ElectronicDocumentResponse("1", message, null, null, null, null, null);
     }
 }

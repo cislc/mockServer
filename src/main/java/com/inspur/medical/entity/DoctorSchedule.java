@@ -51,37 +51,58 @@ public class DoctorSchedule {
     @JsonProperty("DepartmentCode")
     private String departmentCode;
     
-    @Column(name = "department_name", length = 100)
-    @JsonProperty("DepartmentName")
-    private String departmentName;
-    
     @Column(name = "clinic_room_code", length = 50)
     @JsonProperty("ClinicRoomCode")
     private String clinicRoomCode;
-    
-    @Column(name = "clinic_room_name", length = 100)
-    @JsonProperty("ClinicRoomName")
-    private String clinicRoomName;
     
     @Column(name = "doctor_code", length = 50)
     @JsonProperty("DoctorCode")
     private String doctorCode;
     
-    @Column(name = "doctor_name", length = 100)
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_code", referencedColumnName = "department_code", insertable = false, updatable = false)
+    private Department department;
+    
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "doctor_code", referencedColumnName = "doctor_code", insertable = false, updatable = false)
+    private Doctor doctor;
+    
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "clinic_room_code", referencedColumnName = "room_code", insertable = false, updatable = false)
+    private ClinicRoom clinicRoom;
+
+    @JsonProperty("DepartmentName")
+    public String getDepartmentName() {
+        return department != null ? department.getDepartmentName() : null;
+    }
+
+    @JsonProperty("ClinicRoomName")
+    public String getClinicRoomName() {
+        return clinicRoom != null ? clinicRoom.getRoomName() : null;
+    }
+
     @JsonProperty("DoctorName")
-    private String doctorName;
-    
-    @Column(name = "doctor_title_code", length = 20)
+    public String getDoctorName() {
+        return doctor != null ? doctor.getDoctorName() : null;
+    }
+
     @JsonProperty("DoctorTitleCode")
-    private String doctorTitleCode;
-    
-    @Column(name = "doctor_title", length = 50)
+    public String getDoctorTitleCode() {
+        return doctor != null ? doctor.getDoctorTitleCode() : null;
+    }
+
     @JsonProperty("DoctorTitle")
-    private String doctorTitle;
-    
-    @Column(name = "doctor_spec", length = 500)
+    public String getDoctorTitle() {
+        return doctor != null ? doctor.getTitle() : null;
+    }
+
     @JsonProperty("DoctorSpec")
-    private String doctorSpec;
+    public String getDoctorSpec() {
+        return doctor != null ? doctor.getSpecialty() : null;
+    }
     
     @Column(name = "doctor_sess_type_code", length = 20)
     @JsonProperty("DoctorSessTypeCode")

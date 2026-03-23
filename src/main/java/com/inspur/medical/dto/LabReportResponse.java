@@ -22,10 +22,10 @@ public class LabReportResponse {
     private List<LabReportDTO> lisReports;
     
     public static LabReportResponse success(List<LabReportDTO> lisReports) {
-        return new LabReportResponse("1", "查询成功", lisReports);
+        return new LabReportResponse("0", "查询成功", lisReports);
     }
     
     public static LabReportResponse error(String message) {
-        return new LabReportResponse("0", message, null);
+        return new LabReportResponse("1", message, null);
     }
 }

@@ -3,6 +3,8 @@ package com.inspur.medical.controller;
 import com.inspur.medical.dto.ElectronicInvoiceDTO;
 import com.inspur.medical.dto.ElectronicInvoiceQueryDTO;
 import com.inspur.medical.dto.ElectronicInvoiceResponse;
+import com.inspur.medical.dto.PrintStatusDTO;
+import com.inspur.medical.dto.PrintStatusResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ public class InvoicingController {
                                                                       "EINV" + System.currentTimeMillis(),
                                                                       String.valueOf(1000 + random.nextInt(9000)),
                                                                       "0",
-                                                                      "http://example.com/invoice/" + System.currentTimeMillis() + ".pdf",
+                                                                      "/api/mock-pdf/sample.pdf",
                                                                       "2024-01-15");
             ElectronicInvoiceDTO invoice2 = new ElectronicInvoiceDTO("PAY" + (System.currentTimeMillis() - 100000),
                                                                       "BIZ002",
@@ -34,7 +36,7 @@ public class InvoicingController {
                                                                       "EINV" + (System.currentTimeMillis() - 100000),
                                                                       String.valueOf(1000 + random.nextInt(9000)),
                                                                       "0",
-                                                                      "http://example.com/invoice/" + (System.currentTimeMillis() - 100000) + ".pdf",
+                                                                      "/api/mock-pdf/sample.pdf",
                                                                       "2024-01-14");
             lisInvoices.add(invoice1);
             lisInvoices.add(invoice2);
@@ -43,5 +45,10 @@ public class InvoicingController {
         } catch (Exception e) {
             return ElectronicInvoiceResponse.error("查询失败: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/electronic/status")
+    public PrintStatusResponse updateElectronicInvoiceStatus(@RequestBody PrintStatusDTO requestDTO) {
+        return PrintStatusResponse.success();
     }
 }

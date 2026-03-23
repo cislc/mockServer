@@ -12,7 +12,8 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Doctor {
+public class Doctor implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +32,10 @@ public class Doctor {
     @JsonProperty("DepartmentCode")
     private String departmentCode;
     
+    @Column(name = "doctor_title_code", length = 20)
+    @JsonProperty("DoctorTitleCode")
+    private String doctorTitleCode;
+    
     @Column(name = "title", length = 50)
     @JsonProperty("Title")
     private String title;
@@ -46,4 +51,14 @@ public class Doctor {
     @Column(name = "doctor_image", length = 500)
     @JsonProperty("DoctorImage")
     private String doctorImage;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "department_code", referencedColumnName = "department_code", insertable = false, updatable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private Department department;
+
+    @JsonProperty("DepartmentName")
+    public String getDepartmentName() {
+        return department != null ? department.getDepartmentName() : null;
+    }
 }

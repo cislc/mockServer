@@ -22,10 +22,10 @@ public class ElectronicInvoiceResponse {
     private List<ElectronicInvoiceDTO> lisInvoices;
     
     public static ElectronicInvoiceResponse success(List<ElectronicInvoiceDTO> lisInvoices) {
-        return new ElectronicInvoiceResponse("1", "查询成功", lisInvoices);
+        return new ElectronicInvoiceResponse("0", "查询成功", lisInvoices);
     }
     
     public static ElectronicInvoiceResponse error(String message) {
-        return new ElectronicInvoiceResponse("0", message, null);
+        return new ElectronicInvoiceResponse("1", message, null);
     }
 }
