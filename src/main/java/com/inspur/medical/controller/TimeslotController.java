@@ -23,12 +23,20 @@ public class TimeslotController {
         try {
             List<DoctorSchedule> schedules;
             
-            if (queryDTO.getDoctorCode() != null && !queryDTO.getDoctorCode().isEmpty()) {
+            boolean hasDocCode = queryDTO.getDoctorCode() != null && !queryDTO.getDoctorCode().trim().isEmpty();
+            boolean hasDocName = queryDTO.getDoctorName() != null && !queryDTO.getDoctorName().trim().isEmpty();
+            
+            if (hasDocCode && hasDocName) {
+                return TimeslotResponse.error("无法查询：DoctorCode 和 DoctorName 不允许同时传值");
+            }
+            if (!hasDocCode && !hasDocName) {
+                return TimeslotResponse.error("无法查询：DoctorCode 和 DoctorName 不允许同时为空，请传入其中之一");
+            }
+            
+            if (hasDocCode) {
                 schedules = scheduleRepository.findByDoctorCode(queryDTO.getDoctorCode());
-            } else if (queryDTO.getDepartmentCode() != null && !queryDTO.getDepartmentCode().isEmpty()) {
-                schedules = scheduleRepository.findByDepartmentCode(queryDTO.getDepartmentCode());
             } else {
-                schedules = scheduleRepository.findAll();
+                schedules = scheduleRepository.findByDoctorName(queryDTO.getDoctorName());
             }
             
             List<TimeslotDTO> timeRanges = new ArrayList<>();

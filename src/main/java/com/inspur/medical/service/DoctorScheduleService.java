@@ -28,25 +28,34 @@ public class DoctorScheduleService {
 
 
     public List<DoctorSchedule> querySchedules(ScheduleQueryDTO queryDTO) {
+        List<DoctorSchedule> result;
         boolean hasDateRange = queryDTO.getStartDate() != null && !queryDTO.getStartDate().isEmpty() &&
                                queryDTO.getEndDate() != null && !queryDTO.getEndDate().isEmpty();
 
         if (queryDTO.getDoctorCode() != null && !queryDTO.getDoctorCode().isEmpty()) {
             if (hasDateRange) {
-                return scheduleRepository.findByDoctorCodeAndDateRange(queryDTO.getDoctorCode(), queryDTO.getStartDate(), queryDTO.getEndDate());
+                result = scheduleRepository.findByDoctorCodeAndDateRange(queryDTO.getDoctorCode(), queryDTO.getStartDate(), queryDTO.getEndDate());
+            } else {
+                result = scheduleRepository.findByDoctorCode(queryDTO.getDoctorCode());
             }
-            return scheduleRepository.findByDoctorCode(queryDTO.getDoctorCode());
         } else if (queryDTO.getDepartmentCode() != null && !queryDTO.getDepartmentCode().isEmpty()) {
             if (hasDateRange) {
-                return scheduleRepository.findByDepartmentCodeAndDateRange(queryDTO.getDepartmentCode(), queryDTO.getStartDate(), queryDTO.getEndDate());
+                result = scheduleRepository.findByDepartmentCodeAndDateRange(queryDTO.getDepartmentCode(), queryDTO.getStartDate(), queryDTO.getEndDate());
+            } else {
+                result = scheduleRepository.findByDepartmentCode(queryDTO.getDepartmentCode());
             }
-            return scheduleRepository.findByDepartmentCode(queryDTO.getDepartmentCode());
         } else {
             if (hasDateRange) {
-                return scheduleRepository.findByDateRange(queryDTO.getStartDate(), queryDTO.getEndDate());
+                result = scheduleRepository.findByDateRange(queryDTO.getStartDate(), queryDTO.getEndDate());
+            } else {
+                result = scheduleRepository.findAll();
             }
-            return scheduleRepository.findAll();
         }
+
+        String today = java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return result.stream()
+                .filter(s -> s.getServiceDate() != null && s.getServiceDate().compareTo(today) >= 0)
+                .collect(java.util.stream.Collectors.toList());
     }
 
 

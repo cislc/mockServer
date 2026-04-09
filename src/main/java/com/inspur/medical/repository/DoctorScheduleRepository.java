@@ -17,6 +17,9 @@ public interface DoctorScheduleRepository extends JpaRepository<DoctorSchedule, 
     @Query("SELECT s FROM DoctorSchedule s WHERE s.doctorCode = :doctorCode")
     List<DoctorSchedule> findByDoctorCode(@Param("doctorCode") String doctorCode);
     
+    @Query("SELECT s FROM DoctorSchedule s JOIN s.doctor d WHERE d.doctorName = :doctorName")
+    List<DoctorSchedule> findByDoctorName(@Param("doctorName") String doctorName);
+    
     @Query("SELECT COUNT(s) FROM DoctorSchedule s WHERE s.departmentCode = :departmentCode")
     long countByDepartmentCode(@Param("departmentCode") String departmentCode);
     

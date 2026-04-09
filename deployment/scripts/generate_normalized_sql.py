@@ -4,7 +4,8 @@ from datetime import datetime, timedelta
 import os
 
 # Load department mappings
-with open('dept_mapping.json', 'r', encoding='utf-8') as f:
+_script_dir = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(_script_dir, 'dept_mapping.json'), 'r', encoding='utf-8') as f:
     dept_mappings = json.load(f)
 
 # Professional Dept Descriptions
@@ -132,7 +133,7 @@ CREATE TABLE doctor_schedule (
     checkup_fee VARCHAR(20),
     service_fee VARCHAR(20),
     other_fee VARCHAR(20),
-    available_number_str VARCHAR(100),
+    available_number_str VARCHAR(500),
     admit_address_string VARCHAR(200),
     admit_time_range VARCHAR(50),
     note VARCHAR(500),
@@ -233,8 +234,12 @@ CREATE TABLE hospital_info (
 
 sql_statements = [schema_ddl]
 
-# We need a stable base date for demo correctness
-base_date = datetime(2026, 3, 16)
+# Start from today as requested by the user
+base_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+
+# 0. Insert Hospital Info
+sql_statements.append("\n-- 插入医院信息数据")
+sql_statements.append("""INSERT INTO hospital_info (hospital_name, hospital_code, hospital_level, hospital_type, address, phone, website, introduction, business_hours) VALUES ('浪潮智慧医院', 'HOSP_001', '三级甲等', '综合医院', '山东省济南市历下区浪潮路1036号', '0531-88888888', 'http://www.inspur-hospital.com', '浪潮智慧医院是一所集医疗、教学、科研、预防保健为一体的现代化大型综合性三级甲等医院。医院始建于1990年，占地面积约12万平方米，开放床位2000余张，设有内科、外科、妇产科、儿科、眼科、耳鼻喉科等28个临床科室及12个医技科室。医院拥有高素质医疗团队，其中高级职称医师占比40%以上，承担山东省多项重大科研课题，年门诊量逾120万人次，是区域内领先的医疗服务中心。', '门诊时间：周一至周五 08:00-17:00，周六至周日 08:00-12:00；急诊24小时开放');""")
 
 # 1. Generate Departments
 sql_statements.append("\n-- 插入科室数据")
@@ -273,12 +278,11 @@ for dept_name, dept_code in dept_mappings.items():
         sql_doc = f"INSERT INTO doctor (doctor_code, doctor_name, department_code, doctor_title_code, title, specialty, doctor_des, doctor_image) VALUES ('{doc_code}', '{doc_name}', '{dept_code}', '{title_code}', '{title_name}', '{specialty}', '{doc_des}', 'doc_{doc_code}.png');"
         sql_statements.append(sql_doc)
         
-        for days_ahead in range(14):
-            if random.random() < 0.2: continue
+        for days_ahead in range(365):
             sched_date = base_date + timedelta(days=days_ahead)
             date_str = sched_date.strftime('%Y-%m-%d')
             week_day = str(sched_date.weekday() + 1)
-            daily_sessions = random.sample(sessions, random.choice([1, 2]))
+            daily_sessions = sessions
             
             for session_name, session_code, start_t, end_t in daily_sessions:
                 m_code = f"SCH_{doc_code}_{date_str.replace('-','')}_{session_code}"
@@ -308,7 +312,44 @@ for dept_name, dept_code in dept_mappings.items():
                 );"""
                 sql_statements.append(sql_sched.replace('\n', ' ').replace('    ', ''))
 
-output_path = r'i:\inspur_mock_server\mockServer\deployment\db\medical_mock_init.sql'
+# 4. Generate Item Prices
+sql_statements.append("\n-- 插入项目物价数据")
+items = [
+    {"desc": "阿莫西林胶囊", "uom": "盒", "price": "15.50", "spec": "0.25g*50粒", "factory": "珠海联邦制药股份有限公司", "insure": "甲类", "reg_no": "国药准字H44021518"},
+    {"desc": "布洛芬缓释胶囊", "uom": "盒", "price": "28.00", "spec": "0.3g*20粒", "factory": "中美史克制药有限公司", "insure": "甲类", "reg_no": "国药准字H10900089"},
+    {"desc": "阿托伐他汀钙片", "uom": "盒", "price": "35.20", "spec": "20mg*7片", "factory": "辉瑞制药有限公司", "insure": "乙类", "reg_no": "国药准字J20120050"},
+    {"desc": "0.9%氯化钠注射液", "uom": "瓶", "price": "4.50", "spec": "250ml", "factory": "四川科伦药业股份有限公司", "insure": "甲类", "reg_no": "国药准字H51021200"},
+    {"desc": "5%葡萄糖注射液", "uom": "瓶", "price": "5.00", "spec": "250ml", "factory": "四川科伦药业股份有限公司", "insure": "甲类", "reg_no": "国药准字H51020268"},
+    {"desc": "胸部CT普通扫描", "uom": "次", "price": "250.00", "spec": "无", "factory": "医学影像科", "insure": "乙类", "reg_no": "无"},
+    {"desc": "头部MRI平扫", "uom": "次", "price": "600.00", "spec": "无", "factory": "医学影像科", "insure": "乙类", "reg_no": "无"},
+    {"desc": "数字化摄影(DR)", "uom": "部位", "price": "70.00", "spec": "单部位", "factory": "医学影像科", "insure": "甲类", "reg_no": "无"},
+    {"desc": "常规心电图检查", "uom": "次", "price": "35.00", "spec": "12导联", "factory": "心电图室", "insure": "甲类", "reg_no": "无"},
+    {"desc": "血常规(五分类)", "uom": "次", "price": "25.00", "spec": "仪器法", "factory": "检验科", "insure": "甲类", "reg_no": "无"},
+    {"desc": "尿常规", "uom": "次", "price": "15.00", "spec": "干化学分析", "factory": "检验科", "insure": "甲类", "reg_no": "无"},
+    {"desc": "肝功能常规检查", "uom": "项", "price": "45.00", "spec": "生化分析", "factory": "检验科", "insure": "乙类", "reg_no": "无"},
+    {"desc": "肾功能常规检查", "uom": "项", "price": "35.00", "spec": "生化分析", "factory": "检验科", "insure": "乙类", "reg_no": "无"},
+    {"desc": "一级护理", "uom": "日", "price": "50.00", "spec": "按日计费", "factory": "住院部", "insure": "甲类", "reg_no": "无"},
+    {"desc": "二级护理", "uom": "日", "price": "30.00", "spec": "按日计费", "factory": "住院部", "insure": "甲类", "reg_no": "无"},
+    {"desc": "普通病房床位费", "uom": "日", "price": "40.00", "spec": "三人间", "factory": "住院部", "insure": "甲类", "reg_no": "无"},
+    {"desc": "重症监护病房床位费", "uom": "日", "price": "150.00", "spec": "ICU", "factory": "重症医学科", "insure": "乙类", "reg_no": "无"},
+    {"desc": "一次性医用注射器", "uom": "支", "price": "0.80", "spec": "5ml", "factory": "山东威高集团医用高分子制品股份有限公司", "insure": "自费", "reg_no": "国械注准20153150821"},
+    {"desc": "留置针", "uom": "支", "price": "25.00", "spec": "22G", "factory": "碧迪医疗器械(上海)有限公司", "insure": "自费", "reg_no": "国食药监械(进)字2014第3154862号"},
+    {"desc": "雾化吸入治疗", "uom": "次", "price": "30.00", "spec": "单次", "factory": "呼吸科", "insure": "甲类", "reg_no": "无"}
+]
+
+for i, item in enumerate(items):
+    item_code = f"ITEM_{str(i+1).zfill(4)}"
+    serial_no = f"SN{str(i+1).zfill(6)}"
+    sql = f"""INSERT INTO item_price (
+        serial_no, item_desc, item_code, prices_no, uom, price, special_price, 
+        factory, content_desc, charge_standard, insure_sign, registration_no, reg_exp_date
+    ) VALUES (
+        '{serial_no}', '{item['desc']}', '{item_code}', 'PRC2024', '{item['uom']}', '{item['price']}', '{item['price']}',
+        '{item['factory']}', '{item['spec']}', '省级物价标准', '{item['insure']}', '{item['reg_no']}', '2029-12-31'
+    );"""
+    sql_statements.append(sql.replace('\n', ' ').replace('    ', ''))
+
+output_path = os.path.join(_script_dir, '..', 'db', 'medical_mock_init.sql')
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write('\n'.join(sql_statements))
 

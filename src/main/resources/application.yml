@@ -2,6 +2,10 @@ server:
   port: 8080
   servlet:
     context-path: /api
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 
 spring:
   application:
@@ -9,7 +13,7 @@ spring:
   
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://211.87.236.76:3306/medical_mock?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://211.87.236.76:3306/medical_mock?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&characterEncoding=utf8mb4&useUnicode=true
     username: root
     password: Z2A1GNca393kXPM7n98i
     hikari:

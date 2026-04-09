@@ -80,6 +80,21 @@ for i in {1..10}; do
 done
 echo ""
 
+# 步骤2预备: 重新生成排班数据（以当前日期为基准）
+echo "步骤 2预备: 重新生成排班Mock数据..."
+if ! command -v python3 >/dev/null 2>&1; then
+    echo "⚠ 未找到python3，将使用预生成的SQL（排班日期可能不是当前时间）"
+elif [ ! -f "$WORK_DIR/deployment/scripts/dept_mapping.json" ]; then
+    echo "✗ 错误: deployment/scripts/dept_mapping.json 不存在，无法重新生成排班数据!"
+    echo "  请将 dept_mapping.json 上传到: $WORK_DIR/deployment/scripts/"
+    echo "  将使用预生成的SQL（排班日期可能不是当前时间）"
+else
+    echo "  使用python3重新生成排班SQL（基准日期: $(date +%Y-%m-%d)）..."
+    python3 $WORK_DIR/deployment/scripts/generate_normalized_sql.py
+    echo "✓ 排班数据已按当前日期重新生成"
+fi
+echo ""
+
 # 步骤2: 初始化数据库 (表结构与Mock数据)
 echo "步骤 2/4: 初始化数据库..."
 if [ -f "$WORK_DIR/deployment/db/medical_mock_init.sql" ]; then

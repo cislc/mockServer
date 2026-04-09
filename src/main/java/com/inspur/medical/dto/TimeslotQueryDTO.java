@@ -11,6 +11,9 @@ public class TimeslotQueryDTO {
     @JsonProperty("DoctorCode")
     private String doctorCode;
     
+    @JsonProperty("DoctorName")
+    private String doctorName;
+    
     @JsonProperty("RBASSesionCode")
     private String rbasSessionCode;
     

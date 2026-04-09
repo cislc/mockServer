@@ -140,7 +140,7 @@ public class DoctorSchedule {
     @JsonProperty("OtherFee")
     private String otherFee;
     
-    @Column(name = "available_number_str", length = 100)
+    @Column(name = "available_number_str", length = 500)
     @JsonProperty("AvailableNumberStr")
     private String availableNumberStr;
     

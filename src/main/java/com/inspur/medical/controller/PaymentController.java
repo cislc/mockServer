@@ -84,17 +84,35 @@ public class PaymentController {
     public PaidRecordResponse getPaidRecord(@RequestBody PaidRecordQueryDTO queryDTO) {
         try {
             List<PaidRecordDTO> recordList = new ArrayList<>();
+            java.time.LocalDate today = java.time.LocalDate.now();
+            java.time.format.DateTimeFormatter dateFormatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd");
             
             PaidRecordDTO record1 = new PaidRecordDTO("ORD" + System.currentTimeMillis(), 
                                                        "INV" + System.currentTimeMillis(),
-                                                       "2024-01-15", "10:30:00", "60.00", 
-                                                       "0.00", "60.00", "微信支付", "2024-01-15");
-            PaidRecordDTO record2 = new PaidRecordDTO("ORD" + (System.currentTimeMillis() - 100000), 
-                                                       "INV" + (System.currentTimeMillis() - 100000),
-                                                       "2024-01-14", "14:20:00", "45.00", 
-                                                       "0.00", "45.00", "支付宝", "2024-01-14");
+                                                       today.format(dateFormatter), "09:30:00", "285.50", 
+                                                       "150.00", "135.50", "医保及微信统筹", today.format(dateFormatter));
+            PaidRecordDTO record2 = new PaidRecordDTO("ORD" + (System.currentTimeMillis() - 86400000), 
+                                                       "INV" + (System.currentTimeMillis() - 86400000),
+                                                       today.minusDays(1).format(dateFormatter), "14:20:00", "45.00", 
+                                                       "0.00", "45.00", "支付宝", today.minusDays(1).format(dateFormatter));
+            PaidRecordDTO record3 = new PaidRecordDTO("ORD" + (System.currentTimeMillis() - 172800000), 
+                                                       "INV" + (System.currentTimeMillis() - 172800000),
+                                                       today.minusDays(2).format(dateFormatter), "10:15:00", "560.00", 
+                                                       "300.00", "260.00", "医保卡单边扣", today.minusDays(2).format(dateFormatter));
+            PaidRecordDTO record4 = new PaidRecordDTO("ORD" + (System.currentTimeMillis() - 259200000), 
+                                                       "INV" + (System.currentTimeMillis() - 259200000),
+                                                       today.minusDays(3).format(dateFormatter), "16:45:00", "15.00", 
+                                                       "0.00", "15.00", "微信支付", today.minusDays(3).format(dateFormatter));
+            PaidRecordDTO record5 = new PaidRecordDTO("ORD" + (System.currentTimeMillis() - 604800000), 
+                                                       "INV" + (System.currentTimeMillis() - 604800000),
+                                                       today.minusDays(7).format(dateFormatter), "11:00:00", "1250.00", 
+                                                       "800.00", "450.00", "银联银行卡", today.minusDays(7).format(dateFormatter));
+
             recordList.add(record1);
             recordList.add(record2);
+            recordList.add(record3);
+            recordList.add(record4);
+            recordList.add(record5);
             
             return PaidRecordResponse.success(recordList);
         } catch (Exception e) {
